@@ -94,6 +94,18 @@
         <member name="M:CrmLeadManagement.Migrations.AddEstimationDecimalPrecision.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:CrmLeadManagement.Migrations.PostgreSqlMigration">
+            <inheritdoc />
+        </member>
+        <member name="M:CrmLeadManagement.Migrations.PostgreSqlMigration.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CrmLeadManagement.Migrations.PostgreSqlMigration.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CrmLeadManagement.Migrations.PostgreSqlMigration.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:CrmLeadManagement.Models.AppDbContext">
             <summary>
             EF Core database context for SQL Server. Replaces the old in-memory

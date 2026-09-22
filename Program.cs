@@ -1,5 +1,6 @@
 using CrmLeadManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException(
         "ConnectionStrings:DefaultConnection is not configured.");
+
+var isPostgreSql = connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase)
+    || connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase)
+    || connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase);
+
+if (!builder.Environment.IsDevelopment() && !isPostgreSql)
+{
+    throw new InvalidOperationException(
+        "Production requires a PostgreSQL connection string in ConnectionStrings__DefaultConnection.");
+}
 
 var connectionStringProvider = builder.Configuration is IConfigurationRoot configurationRoot
     ? configurationRoot.Providers
@@ -16,17 +27,33 @@ var connectionStringProvider = builder.Configuration is IConfigurationRoot confi
         ?.GetType().Name
     : "Unknown";
 
-// SQL Server via EF Core.
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        connectionString,
-        sqlOptions =>
-        {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(10),
-                errorNumbersToAdd: null);
-        }));
+{
+    if (isPostgreSql)
+    {
+        options.UseNpgsql(
+            connectionString,
+            npgsqlOptions =>
+            {
+                npgsqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(10),
+                    errorCodesToAdd: null);
+            });
+    }
+    else
+    {
+        options.UseSqlServer(
+            connectionString,
+            sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(10),
+                    errorNumbersToAdd: null);
+            });
+    }
+});
 
 // Allows static stores to access the current request's DbContext.
 builder.Services.AddHttpContextAccessor();
@@ -94,10 +121,18 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
     app.Logger.LogInformation(
-        "SQL Server configuration resolved from {Provider}",
+        "{DatabaseProvider} configuration resolved from {Provider}",
+        isPostgreSql ? "PostgreSQL" : "SQL Server",
         connectionStringProvider);
 
-    db.Database.Migrate();
+    if (isPostgreSql)
+    {
+        db.Database.EnsureCreated();
+    }
+    else
+    {
+        db.Database.Migrate();
+    }
 
     LeadStore.SeedIfEmpty(db);
     SettingsStore.SeedIfEmpty(db);
