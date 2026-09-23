@@ -1,31 +1,61 @@
 using CrmLeadManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException(
-        "ConnectionStrings:DefaultConnection is not configured.");
+var isDevelopment = builder.Environment.IsDevelopment();
+var isPostgreSql = !isDevelopment;
+var connectionString = isDevelopment
+    ? @"Server=(localdb)\MSSQLLocalDB;Database=CrmLeadManagementDb;Trusted_Connection=True;TrustServerCertificate=True;"
+    : Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+        ?? string.Empty;
 
-var isPostgreSql = connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase)
-    || connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase)
-    || connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase);
+var connectionStringProvider = isDevelopment
+    ? "Development LocalDB"
+    : "ConnectionStrings__DefaultConnection environment variable";
 
-if (!builder.Environment.IsDevelopment() && !isPostgreSql)
+if (isPostgreSql)
 {
-    throw new InvalidOperationException(
-        "Production requires a PostgreSQL connection string in ConnectionStrings__DefaultConnection.");
-}
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException(
+            "Production requires a PostgreSQL connection string in the "
+            + "ConnectionStrings__DefaultConnection environment variable.");
+    }
 
-var connectionStringProvider = builder.Configuration is IConfigurationRoot configurationRoot
-    ? configurationRoot.Providers
-        .Reverse()
-        .FirstOrDefault(provider =>
-            provider.TryGet("ConnectionStrings:DefaultConnection", out _))
-        ?.GetType().Name
-    : "Unknown";
+    var sqlServerOptions = new[]
+    {
+        "Trusted_Connection",
+        "TrustServerCertificate",
+        "Integrated Security",
+        "IntegratedSecurity"
+    };
+
+    if (sqlServerOptions.Any(option =>
+        connectionString.Contains(option, StringComparison.OrdinalIgnoreCase)))
+    {
+        throw new InvalidOperationException(
+            "ConnectionStrings__DefaultConnection contains SQL Server options. "
+            + "Production requires a PostgreSQL connection string without Trusted_Connection, "
+            + "TrustServerCertificate, or Integrated Security.");
+    }
+
+    try
+    {
+        _ = new NpgsqlConnectionStringBuilder(connectionString);
+    }
+    catch (ArgumentException ex)
+    {
+        throw new InvalidOperationException(
+            "ConnectionStrings__DefaultConnection is not a valid PostgreSQL connection string. "
+            + "Do not include SQL Server options such as Trusted_Connection, "
+            + "TrustServerCertificate, or Integrated Security.",
+            ex);
+    }
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -125,14 +155,7 @@ using (var scope = app.Services.CreateScope())
         isPostgreSql ? "PostgreSQL" : "SQL Server",
         connectionStringProvider);
 
-    if (isPostgreSql)
-    {
-        db.Database.EnsureCreated();
-    }
-    else
-    {
-        db.Database.Migrate();
-    }
+    db.Database.Migrate();
 
     LeadStore.SeedIfEmpty(db);
     SettingsStore.SeedIfEmpty(db);
