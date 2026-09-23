@@ -11,7 +11,7 @@ var isDevelopment = builder.Environment.IsDevelopment();
 var isPostgreSql = !isDevelopment;
 var connectionString = isDevelopment
     ? @"Server=(localdb)\MSSQLLocalDB;Database=CrmLeadManagementDb;Trusted_Connection=True;TrustServerCertificate=True;"
-    : Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+    : builder.Configuration.GetConnectionString("DefaultConnection")   
         ?? string.Empty;
 
 var connectionStringProvider = isDevelopment
