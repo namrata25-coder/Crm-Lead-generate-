@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY ["CrmLeadManagement.csproj", "./"]
 RUN dotnet restore "CrmLeadManagement.csproj"
+RUN apt-get update && apt-get install -y libgssapi-krb5-2
 
 COPY . .
 
