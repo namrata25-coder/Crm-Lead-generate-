@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-
 #nullable disable
 
 namespace CrmLeadManagement.Migrations
@@ -50,7 +49,6 @@ namespace CrmLeadManagement.Migrations
 
                     b.ToTable("FollowUpSettings");
                 });
-                
 
             modelBuilder.Entity("CrmLeadManagement.Models.Lead", b =>
                 {

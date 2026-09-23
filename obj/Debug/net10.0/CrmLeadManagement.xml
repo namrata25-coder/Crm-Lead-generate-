@@ -118,6 +118,18 @@
         <member name="M:CrmLeadManagement.Migrations.UpdateModel.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:CrmLeadManagement.Migrations.UpdatePostgreSQL">
+            <inheritdoc />
+        </member>
+        <member name="M:CrmLeadManagement.Migrations.UpdatePostgreSQL.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CrmLeadManagement.Migrations.UpdatePostgreSQL.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:CrmLeadManagement.Migrations.UpdatePostgreSQL.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:CrmLeadManagement.Models.AppDbContext">
             <summary>
             EF Core database context for SQL Server. Replaces the old in-memory
