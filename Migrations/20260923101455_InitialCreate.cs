@@ -5,7 +5,7 @@
 namespace CrmLeadManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class FixFinanceLineItem : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -164,7 +164,11 @@ namespace CrmLeadManagement.Migrations
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AttachmentPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AttachmentFileName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AttachmentFileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Rate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
