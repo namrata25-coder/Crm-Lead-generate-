@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CrmLeadManagement.Models;
 
 /// <summary>
-/// EF Core database context for SQL Server. Replaces the old in-memory
+/// EF Core database context for PostgreSQL. Replaces the old in-memory
 /// LeadStore/SettingsStore lists — everything below now lives in real
 /// tables (Leads, CallHistoryEntries, FollowUpEntries, etc.).
 /// </summary>
@@ -51,7 +51,7 @@ public class AppDbContext : DbContext
             // (identified by its "defining navigation" — Estimations.Items vs Quotations.Items),
             // but WITHOUT an explicit ToTable() both would fall back to the same default table
             // name derived from the shared CLR type name — "FinanceLineItem" — which collides
-            // and is exactly why SQL Server never ended up with a usable table by that name
+            // and previously prevented the provider from creating a usable table by that name
             // (every insert then failed with "Invalid object name 'FinanceLineItem'"). Giving
             // each nested collection its own explicit table name removes that ambiguity.
             //

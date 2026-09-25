@@ -436,7 +436,7 @@ namespace CrmLeadManagement.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.Property<string>("Remarks")
+                            b1.Property<string>("Remarks")  
                                 .IsRequired()
                                 .HasColumnType("text");
 

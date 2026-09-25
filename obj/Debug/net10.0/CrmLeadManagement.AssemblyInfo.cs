@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CrmLeadManagement")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a2067a65773a095c6b7d489e89650dcea6c8fb6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+778b61340094fe1d37783966eecfd26b234e09d1")]
 [assembly: System.Reflection.AssemblyProductAttribute("CrmLeadManagement")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CrmLeadManagement")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -70,45 +70,21 @@
         <member name="M:CrmLeadManagement.Controllers.LeadController.BuildLineItems(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String})">
             <summary>Builds the Items/Services line-item list from the parallel form arrays posted by the Finance forms.</summary>
         </member>
-        <member name="T:CrmLeadManagement.Migrations.FixFinanceLineItem">
+        <member name="T:CrmLeadManagement.Migrations.InitialCreate">
             <inheritdoc />
         </member>
-        <member name="M:CrmLeadManagement.Migrations.FixFinanceLineItem.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:CrmLeadManagement.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:CrmLeadManagement.Migrations.FixFinanceLineItem.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:CrmLeadManagement.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:CrmLeadManagement.Migrations.FixFinanceLineItem.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:CrmLeadManagement.Migrations.AddEstimationDecimalPrecision">
-            <inheritdoc />
-        </member>
-        <member name="M:CrmLeadManagement.Migrations.AddEstimationDecimalPrecision.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:CrmLeadManagement.Migrations.AddEstimationDecimalPrecision.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:CrmLeadManagement.Migrations.AddEstimationDecimalPrecision.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:CrmLeadManagement.Migrations.PostgreSqlMigration">
-            <inheritdoc />
-        </member>
-        <member name="M:CrmLeadManagement.Migrations.PostgreSqlMigration.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:CrmLeadManagement.Migrations.PostgreSqlMigration.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:CrmLeadManagement.Migrations.PostgreSqlMigration.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:CrmLeadManagement.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:CrmLeadManagement.Models.AppDbContext">
             <summary>
-            EF Core database context for SQL Server. Replaces the old in-memory
+            EF Core database context for PostgreSQL. Replaces the old in-memory
             LeadStore/SettingsStore lists — everything below now lives in real
             tables (Leads, CallHistoryEntries, FollowUpEntries, etc.).
             </summary>

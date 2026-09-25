@@ -2,12 +2,9 @@
 
 A production-styled ASP.NET Core **MVC** CRM Lead Management module (migrated
 from Razor Pages — there is no `Pages/` folder or `PageModel` anywhere in the
-project anymore; every screen is a Controller + View). Data lives in static
-in-memory stores (`Models/LeadStore.cs` and `Models/SettingsStore.cs`) rather
-than a database — there's no persistence across app restarts, but Add / Edit /
-Delete are **real, working operations** against that in-memory store for the
-lifetime of the running app: add a lead, refresh, edit it, refresh, delete
-it — the changes stick.
+project anymore; every screen is a Controller + View). Data is persisted in
+PostgreSQL through Entity Framework Core migrations. The application applies
+pending migrations and seeds initial settings when it starts.
 
 ## What's implemented
 
@@ -69,7 +66,7 @@ Then open the URL shown in the console (typically `https://localhost:5001` or
 
 ## Structure
 
-```
+```text
 Controllers/
   HomeController.cs         Root "/" -> redirects to Lead/List
   LeadController.cs         List, Assigned, Details, and the shared Save/Delete actions
@@ -86,8 +83,8 @@ Views/
   Settings/Index.cshtml     Lead Status, Lead Sources, Users/Roles, Follow-up Settings
 Models/
   Lead.cs                    Lead + CallHistoryEntry/FollowUpEntry/RequirementEntry/VisitEntry
-  LeadStore.cs                In-memory Lead data + AddLead/UpdateLead/DeleteLead (no DB)
-  SettingsStore.cs            In-memory Settings data (statuses, sources, users, follow-up config)
+  LeadStore.cs                Lead data access and AddLead/UpdateLead/DeleteLead
+  SettingsStore.cs            Settings data access (statuses, sources, users, follow-up config)
   LeadInputModel.cs           Add/Edit Lead form binding model
   SettingsViewModel.cs        Bundles Statuses/Sources/Users/FollowUp for the Settings view
 wwwroot/
@@ -97,17 +94,27 @@ wwwroot/
 
 ## JSON REST API (for a separate frontend / backend consumption)
 
-In addition to the MVC pages, this project now exposes a plain JSON REST API
-under `/api`, backed by the same in-memory `LeadStore` / `SettingsStore` used
-by the views (so data added via the API shows up on the pages, and vice
-versa). CORS is enabled for all origins in `Program.cs` so any frontend
-(React, Angular, mobile app, Postman, etc.) can call it directly — tighten the
-`AllowAll` CORS policy before deploying to production.
+In addition to the MVC pages, this project exposes a plain JSON REST API under
+`/api`, backed by the same PostgreSQL data access used by the views. CORS is
+configurable with the comma-separated `CORS_ALLOWED_ORIGINS` environment
+variable. When it is omitted, the application permits any origin for simple
+frontend/API testing; set it in production when the frontend has a known URL.
+
+## Configuration
+
+Set `DATABASE_URL` to Render's PostgreSQL connection URL in production. The
+application also accepts `ConnectionStrings__DefaultConnection`, which is
+useful for local development. Both values may be either a PostgreSQL URI or an
+Npgsql connection string. No database password or connection string is stored
+in the repository.
+
+Render supplies `PORT`; the application listens on that port automatically.
+Swagger is available at `/swagger` in every environment.
 
 ### Leads — `/api/leads`
 
 | Method | Route | Description |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/api/leads` | List leads. Optional query params: `status`, `assignedTo`, `search` |
 | GET | `/api/leads/assigned` | Leads that currently have an `AssignedTo` |
 | GET | `/api/leads/{id}` | Get one lead by id (e.g. `LD-1001`) |
@@ -140,7 +147,7 @@ curl -X POST http://localhost:5000/api/leads \
 ### Settings — `/api/settings`
 
 | Method | Route | Description |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/api/settings` | Everything (statuses, sources, users, follow-up defaults) |
 | GET / POST | `/api/settings/statuses` | List / add a lead status. POST body: `{ "value": "In Review" }` |
 | DELETE | `/api/settings/statuses/{status}` | Remove a status |

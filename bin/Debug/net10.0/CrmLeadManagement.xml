@@ -84,7 +84,7 @@
         </member>
         <member name="T:CrmLeadManagement.Models.AppDbContext">
             <summary>
-            EF Core database context for SQL Server. Replaces the old in-memory
+            EF Core database context for PostgreSQL. Replaces the old in-memory
             LeadStore/SettingsStore lists — everything below now lives in real
             tables (Leads, CallHistoryEntries, FollowUpEntries, etc.).
             </summary>
