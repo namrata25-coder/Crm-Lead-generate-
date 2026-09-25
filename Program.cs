@@ -36,12 +36,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         });
 });
 
-var renderPort = builder.Configuration["PORT"];
-if (!string.IsNullOrWhiteSpace(renderPort))
-{
-    builder.WebHost.UseUrls($"http://0.0.0.0:{renderPort}");
-}
-
 // Allows static stores to access the current request's DbContext.
 builder.Services.AddHttpContextAccessor();
 
